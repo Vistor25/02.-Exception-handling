@@ -12,20 +12,69 @@ namespace Tas2
     {
         public static int Parse(string number)
         {
-            int result = 0;
-            int counter = 1;
-            for (int i = number.Length-1; i >=0 ; i--)
+            if (String.IsNullOrEmpty(number))
             {
-                result = result + ToDigit(number[i])*counter;
-                counter *= 10;
+                throw new ArgumentNullException();
             }
-            return result;
+            number = number.Trim(' ');
+            bool IsNegative = Negative(ref number);
+            ValidateNumber(number);
+            int y = 0;
+            try
+            {
+               y = InternalParse(number, IsNegative);
+            }
+            catch (OverflowException)
+            {
+
+            }
+            return y;
+            
         }
 
+        private static bool Negative(ref string number)
+        {
+            if (number.StartsWith("-"))
+            {
+                number = number.Substring(1);
+                return true;
+            }
+            if (number.StartsWith("+"))
+            {
+                number = number.Substring(1);
+                return false;
+            }
+            return false;
+        }
         private static int ToDigit(char a)
         {
             int b = Convert.ToByte(a);
             return b - 48;
+        }
+
+        private static int InternalParse(string number, bool isNegative)
+        {
+            int result = 0;
+            int counter = 1;
+            for (int i = number.Length - 1; i >= 0; i--)
+            {
+                result =checked(result + ToDigit(number[i]) * counter);
+                counter *= 10;
+            }
+            return isNegative?result*-1:result;
+        }
+        private static void ValidateNumber(string number)
+        {
+           
+            if (number.Length > 10)
+            {
+                throw new OverflowException();
+            }
+            if (number.All(item => !Char.IsDigit(item)))
+            {
+                throw new FormatException();
+            }
+
         }
     }
 }

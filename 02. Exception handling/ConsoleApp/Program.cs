@@ -16,6 +16,9 @@ namespace ConsoleApp
                 string a = Console.ReadLine();
                 Console.WriteLine(ParseNumber.Parse(a));
             }
+            //string a = "(54)";
+            //out int b = 0;
+            //Int32.TryParse(a,b);
         }
     }
 }
